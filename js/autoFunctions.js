@@ -84,7 +84,9 @@ async function getPancakePrices(){
 	let resDefyBnb = await defyBnbAuto.methods.getReserves().call()	
 	let resDefyBusd = await defyBusdAuto.methods.getReserves().call()
 	let roundData = await priceFeed.methods.latestRoundData().call()
-	currentBnbPriceToUsd = roundData.answer / 1e18
+	console.log(roundData)
+	currentBnbPriceToUsd = roundData.answer / 1e8
+	console.log(currentBnbPriceToUsd)
 	
 	currentBnbToDefy = await pancakeContract.methods.quote(toHexString(1e18), resDefyBnb._reserve0, resDefyBnb._reserve1).call() / 1e18
 	currentDefyToBnb = await pancakeContract.methods.quote(toHexString(1e18), resDefyBusd._reserve1, resDefyBusd._reserve0).call() / 1e18
@@ -103,7 +105,7 @@ async function getApePrices(){
 	let resDefyBnb = await defyBnbApeAuto.methods.getReserves().call()	
 	let resDefyBusd = await defyBusdApeAuto.methods.getReserves().call()
 	let roundData = await priceFeed.methods.latestRoundData().call()
-	currentBnbPriceToUsd = roundData.answer / 1e18
+	currentBnbPriceToUsd = roundData.answer / 1e8
 	
 	currentApeBnbToDefy = await apeContract.methods.quote(toHexString(1e18), resDefyBnb._reserve1, resDefyBnb._reserve0).call() / 1e18
 	currentApeDefyToBnb = await apeContract.methods.quote(toHexString(1e18), resDefyBusd._reserve0, resDefyBusd._reserve1).call() / 1e18
@@ -134,11 +136,11 @@ async function autoBalances(pid){
 	
 	if(pid < 2){
 		pools[pid].defyBal = parseInt(await defyAuto.methods.balanceOf(pools[pid].addr).call()) / 1e18
-		$('.pool-apy-'+pid)[0].innerHTML = '' +(rewardPerYear / ( 228/100 * (pools[pid].lpInFarm / pools[pid].totalSupply) * pools[pid].defyBal) * 100).toFixed(2) + '%'
+		$('.pool-apy-'+pid)[0].innerHTML = '' +(rewardPerYear / ( 1200/250 * (pools[pid].lpInFarm / pools[pid].totalSupply) * pools[pid].defyBal) * 100).toFixed(2) + '%'
 	}
 	if(pid > 1){
 		pools[pid].defyBal = parseInt(await defyAuto.methods.balanceOf(pools[pid].addr).call()) / 1e18
-		$('.pool-apy-'+pid)[0].innerHTML = '' +(rewardPerYear / ( 228/100 * (pools[pid].lpInFarm / pools[pid].totalSupply) * pools[pid].defyBal) * 100).toFixed(2) + '%'
+		$('.pool-apy-'+pid)[0].innerHTML = '' +(rewardPerYear / ( 1200/50 * (pools[pid].lpInFarm / pools[pid].totalSupply) * pools[pid].defyBal) * 100).toFixed(2) + '%'
 	}
 }
 function getLiqTotals(pid){
@@ -179,6 +181,7 @@ async function getApeDefyBnbLiq(pid){
 	let token1Pool = await wbnbAuto.methods.balanceOf(pools[pid].addr).call() / pools[pid].token1Dec
 			
 	pools[pid].lpTokenValueTotal = (currentApeBusdToDefy * token0Pool) + (token1Pool * currentBnbPriceToUsd)
+
 	let totalLiqInFarm = pools[pid].lpTokenValueTotal * (pools[pid].lpInFarm*1e18) / (pools[pid].totalSupply*1e18)
 	
 	$('.pool-liq-'+pid)[0].innerHTML = "" + totalLiqInFarm.toFixed(2)+'$'
