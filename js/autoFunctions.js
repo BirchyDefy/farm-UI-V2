@@ -86,7 +86,7 @@ async function getPancakePrices(){
 	let roundData = await priceFeed.methods.latestRoundData().call()
 	currentBnbPriceToUsd = roundData.answer / 1e18
 	
-	currentBnbToDefy = await pancakeContract.methods.quote(toHexString(1e18), resDefyBnb._reserve1, resDefyBnb._reserve0).call() / 1e18
+	currentBnbToDefy = await pancakeContract.methods.quote(toHexString(1e18), resDefyBnb._reserve0, resDefyBnb._reserve1).call() / 1e18
 	currentDefyToBnb = await pancakeContract.methods.quote(toHexString(1e18), resDefyBusd._reserve1, resDefyBusd._reserve0).call() / 1e18
 	//$('.defy-bnb-price')[0].innerHTML = '1 Defy = '+currentBnbToDefy.toFixed(2)+' BNB'
 	
@@ -106,7 +106,9 @@ async function getApePrices(){
 	currentBnbPriceToUsd = roundData.answer / 1e18
 	
 	currentApeBnbToDefy = await apeContract.methods.quote(toHexString(1e18), resDefyBnb._reserve1, resDefyBnb._reserve0).call() / 1e18
-	currentApeDefyToBnb = await apeContract.methods.quote(toHexString(1e18), resDefyBusd._reserve1, resDefyBusd._reserve0).call() / 1e18
+	currentApeDefyToBnb = await apeContract.methods.quote(toHexString(1e18), resDefyBusd._reserve0, resDefyBusd._reserve1).call() / 1e18
+	console.log(currentApeBnbToDefy)
+	console.log(currentApeDefyToBnb)
 	
 	currentApeBusdToDefy = await ilpContract.methods.getDefyPrice().call() / 1e18
 	
